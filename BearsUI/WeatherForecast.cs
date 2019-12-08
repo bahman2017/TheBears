@@ -1,6 +1,6 @@
 using System;
 
-namespace TheBears
+namespace BearsUI
 {
     public class WeatherForecast
     {

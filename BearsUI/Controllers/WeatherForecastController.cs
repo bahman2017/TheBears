@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace TheBears.Controllers
+namespace BearsUI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
