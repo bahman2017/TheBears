@@ -22,19 +22,40 @@ namespace TheBears.ADORepoistory
             con = new SqlConnection(constr);
         }
 
-        public IEnumerable<BearModel> List() => throw new NotImplementedException();
+        public IEnumerable<BearModel> List()
+        {
+            var res = new List<BearModel>();
+            SqlCommand com = new SqlCommand("GetAllBears", con);
+            com.CommandType = CommandType.StoredProcedure;
+           
+            SqlDataAdapter da = new SqlDataAdapter(com);
+            DataTable dt = new DataTable();
+
+            con.Open();
+            da.Fill(dt);
+            con.Close();
+            foreach (DataRow dr in dt.Rows)
+            {
+                res.Add(
+                    new BearModel
+                    {
+
+                        Id = Convert.ToInt32(dr["Id"]),
+                        Name = Convert.ToString(dr["Name"]),
+                        TypeName = Convert.ToString(dr["TypeName"])
+                    });
+            }
+            return res;
+        }
+
 
         public bool Add(BearModel entity)
         {
             SqlCommand com = new SqlCommand("AddBear", con);
             com.CommandType = CommandType.StoredProcedure;
             com.Parameters.AddWithValue("@Name", entity.Name);
-            com.Parameters.AddWithValue("@typeId", entity.TypeId);
-            com.Parameters.AddWithValue("@habitat", entity.Habitat);
-            com.Parameters.AddWithValue("@sex", entity.Sex);
-            com.Parameters.AddWithValue("@age", entity.Age);
-            com.Parameters.AddWithValue("@height", entity.Height);
-            com.Parameters.AddWithValue("@weight", entity.Weight);
+            com.Parameters.AddWithValue("@typeName", entity.TypeName);
+          
 
             con.Open();
             int i = com.ExecuteNonQuery();
@@ -53,14 +74,84 @@ namespace TheBears.ADORepoistory
 
         }
 
-        public bool Delete(BearModel entity)
+        public bool Delete(int id)
         {
-            throw new NotImplementedException();
+            SqlCommand com = new SqlCommand("DeleteBear", con);
+
+            com.CommandType = CommandType.StoredProcedure;
+            com.Parameters.AddWithValue("@Id", id);
+
+            con.Open();
+            int i = com.ExecuteNonQuery();
+            con.Close();
+            if (i >= 1)
+            {
+
+                return true;
+
+            }
+            else
+            {
+
+                return false;
+            }
+
         }
 
         public bool Update(BearModel entity)
         {
-            throw new NotImplementedException();
+            SqlCommand com = new SqlCommand("UpdateBear", con);
+            com.CommandType = CommandType.StoredProcedure;
+            com.Parameters.AddWithValue("@id", entity.Id);
+            com.Parameters.AddWithValue("@Name", entity.Name);
+            com.Parameters.AddWithValue("@typeName", entity.TypeName);
+       
+            con.Open();
+            int i = com.ExecuteNonQuery();
+            con.Close();
+            if (i >= 1)
+            {
+
+                return true;
+
+            }
+            else
+            {
+
+                return false;
+            }
+
+        }
+
+        public IEnumerable<BearModel> List(int page, int size, string sort, out int totalrow)
+        {
+            var res = new List<BearModel>();
+            SqlCommand com = new SqlCommand("GetBears", con);
+            com.CommandType = CommandType.StoredProcedure;
+            com.Parameters.AddWithValue("@page", page);
+            com.Parameters.AddWithValue("@size", size);
+            com.Parameters.AddWithValue("@sort", sort);
+            com.Parameters.Add("@totalrow", SqlDbType.Int).Direction = ParameterDirection.Output;
+            SqlDataAdapter da = new SqlDataAdapter(com);
+            DataTable dt = new DataTable();
+
+            con.Open();
+            da.Fill(dt);
+            con.Close();
+            totalrow = Convert.ToInt32(com.Parameters["@totalrow"].Value);
+            foreach (DataRow dr in dt.Rows)
+            {
+                res.Add(
+                    new BearModel
+                    {
+
+                        Id = Convert.ToInt32(dr["Id"]),
+                        Name = Convert.ToString(dr["Name"]),
+                        TypeName = Convert.ToString(dr["TypeName"])
+                        
+                    });
+            }
+            return res;
         }
     }
 }

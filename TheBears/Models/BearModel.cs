@@ -15,20 +15,7 @@ namespace TheBears.Models
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Type is required.")]
-        public int TypeId { get; set; }
-
-        [Required(ErrorMessage = "Habitat is required.")]
-        public string Habitat { get; set; }
-
-        [Required(ErrorMessage = "Sex is required.")]
-        public int Sex { get; set; }
-        [Required(ErrorMessage = "Age is required.")]
-        public int Age { get; set; }
-        [Required(ErrorMessage = "Height is required.")]
-        public int Height { get; set; }
-
-        [Required(ErrorMessage = "Weight is required.")]
-        public int Weight { get; set; }
+        public string TypeName { get; set; }
 
     }
 }
